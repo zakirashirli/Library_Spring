@@ -1,9 +1,14 @@
-package com.library.dea.model;
+package com.library.dea.entity;
 
-import org.springframework.stereotype.Component;
+import jakarta.persistence.*;
 
-@Component // bean
+@Entity
+@Table(name = "books")
 public class Book {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String title;
     private String author;
 
@@ -15,6 +20,14 @@ public class Book {
     Book(String title, String author) {
         this.title = title;
         this.author = author;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTitle() {
