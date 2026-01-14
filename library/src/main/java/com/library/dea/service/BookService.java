@@ -28,6 +28,16 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    // show book by title
+    public List<Book> getAllByTitle(@PathVariable String title){
+        return bookRepository.findByTitle(title);
+    }
+
+    // get all by min price
+    public List<Book> getAllByMinPrice(@PathVariable Double price) {
+        return bookRepository.findByMinPrice(price);
+    }
+
     // show book by id (GET)
     public Book showById(@PathVariable Integer id) {
         return bookRepository.findById(id)
