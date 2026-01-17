@@ -2,6 +2,9 @@ package com.library.dea.controller;
 
 import com.library.dea.entity.Book;
 import com.library.dea.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,15 @@ public class BookController {
     @GetMapping("/all")
     public List<Book> getAllBooks() {
         return bookService.showAll();
+    }
+
+    @GetMapping
+    public Page<Book> getBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookService.getBooks(pageable);
     }
 
     @GetMapping("/find/title/{title}")
