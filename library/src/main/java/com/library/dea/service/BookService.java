@@ -33,9 +33,19 @@ public class BookService {
         return bookRepository.findByTitle(title);
     }
 
+    // show books by author
+    public List<Book> getAllByAuthor(@PathVariable String author){
+        return bookRepository.findByAuthor(author);
+    }
+
     // get all by min price
     public List<Book> getAllByMinPrice(@PathVariable Double price) {
         return bookRepository.findByMinPrice(price);
+    }
+
+    // show books by min amount
+    public List<Book> getAllByMinAmount(@PathVariable Integer minAmount) {
+        return bookRepository.findByMinAmount(minAmount);
     }
 
     // show book by id (GET)

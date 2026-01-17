@@ -16,6 +16,11 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     )
     List<Book> findByTitle(String title);
     // findByAuthor
+    @Query(
+           value = "SELECT * FROM books WHERE LOWER(author) LIKE LOWER(CONCAT('%', :author, '%'))",
+            nativeQuery = true
+    )
+    List<Book> findByAuthor(String author);
     // ... dz (sami pishem BEZ ctrl+c,v)
 
     //findByMinPrice
@@ -24,5 +29,11 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
             nativeQuery = true
     )
     List<Book> findByMinPrice(Double minPrice);
+
     //findByAmount
+    @Query(
+            value = "SELECT * FROM books WHERE amount >= :minAmount",
+            nativeQuery = true
+    )
+    List<Book> findByMinAmount(Integer minAmount);
 }
