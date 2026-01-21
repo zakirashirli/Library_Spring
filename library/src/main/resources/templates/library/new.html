@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Book</title>
+</head>
+<body>
+<style>
+    /* ===== Base ===== */
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 40px;
+        background: #2b2b2b;
+        color: #e6e6e6;
+    }
+
+    /* Light mode */
+    @media (prefers-color-scheme: light) {
+        body {
+            background: #f4f6f8;
+            color: #333;
+        }
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    /* ===== Form ===== */
+    form {
+        max-width: 420px;
+        padding: 20px;
+        border-radius: 8px;
+        background: #1f1f1f;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    }
+
+    @media (prefers-color-scheme: light) {
+        form {
+            background: #ffffff;
+        }
+    }
+
+    form div {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: 1px solid #555;
+        background: #2b2b2b;
+        color: #e6e6e6;
+    }
+
+    @media (prefers-color-scheme: light) {
+        input[type="text"] {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #4da3ff;
+    }
+
+    /* ===== Button ===== */
+    button {
+        padding: 9px 16px;
+        border-radius: 6px;
+        border: none;
+        background: #2ecc71;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #27ae60;
+    }
+
+    /* ===== Back link ===== */
+    a {
+        display: inline-block;
+        margin-top: 15px;
+        font-weight: 600;
+        color: #4da3ff;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+    <h2>Add New Book</h2>
+<form th:action="@{/books}"
+      th:object="${book}"
+      method="post">
+
+    <input type="hidden" th:field="*{id}"/>
+
+    <div>
+        <label>Title:</label>
+        <input type="text" th:field="*{title}" required/>
+    </div>
+    <div>
+        <label>Author:</label>
+        <input type="text" th:field="*{author}" required/>
+    </div>
+
+    <button type="submit">Save</button>
+</form>
+
+<a th:href="@{/books}">Back</a>
+</body>
+</html>

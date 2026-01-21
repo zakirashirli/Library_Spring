@@ -5,14 +5,120 @@
     <title>Books</title>
 </head>
 <body>
+<style>
+    /* ===== Base ===== */
+body {
+padding: 40px;
+font-family: Arial, Helvetica, sans-serif;
+background: #2b2b2b;
+color: #e6e6e6;
+}
+
+/* Light mode (browser preference) */
+@media (prefers-color-scheme: light) {
+body {
+    background: #f4f6f8;
+    color: #333;
+}
+}
+
+/* ===== Heading ===== */
+h2 {
+margin-bottom: 15px;
+}
+
+/* ===== Add Book Button ===== */
+a[href="/books/new"] {
+display: inline-block;
+margin-bottom: 15px;
+padding: 8px 14px;
+border-radius: 6px;
+background: #2ecc71;
+color: #fff;
+font-weight: 600;
+text-decoration: none;
+}
+
+a[href="/books/new"]:hover {
+background: #27ae60;
+}
+
+/* ===== Table ===== */
+table {
+width: 100%;
+border-collapse: collapse;
+margin-top: 10px;
+}
+
+/* Table Header */
+th {
+background: #3c3f41;
+color: #ffffff;
+padding: 10px;
+text-align: left;
+border: 1px solid #555;
+}
+
+/* Light mode header */
+@media (prefers-color-scheme: light) {
+th {
+    background: #e9ecef;
+    color: #333;
+    border-color: #ccc;
+}
+}
+
+/* Table Cells */
+td {
+padding: 10px;
+border: 1px solid #555;
+}
+
+/* Light mode cells */
+@media (prefers-color-scheme: light) {
+td {
+    border-color: #ccc;
+}
+}
+
+/* Zebra rows */
+tr:nth-child(even) {
+background: #323232;
+}
+
+@media (prefers-color-scheme: light) {
+tr:nth-child(even) {
+    background: #f9f9f9;
+}
+}
+
+/* Hover effect */
+tr:hover {
+background: #404040;
+}
+
+@media (prefers-color-scheme: light) {
+tr:hover {
+    background: #eef2f6;
+}
+}
+
+</style>
   <h2>Book List</h2>
 
-  <ul>
-    <li th:each="book : ${books}">
-      <span th:text="${book.title}"></span>
-      -
-      <span th:text="${book.author}"></span>
-    </li>
-  </ul>
+  <a th:href="@{/books/new}">+Add New Book</a>
+
+  <br>
+
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+        </tr>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+        </tr>
+    </table>
 </body>
 </html>
