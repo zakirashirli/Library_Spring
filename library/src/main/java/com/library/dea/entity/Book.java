@@ -1,6 +1,8 @@
 package com.library.dea.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "books")
@@ -9,9 +11,13 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotBlank(message = "Title обязательно!!")
     private String title;
+    @NotBlank(message = "Author обязательно!!")
     private String author;
+    @NotNull(message = "Price обязательно!!")
     private Double price;
+    @NotNull(message = "Amount обязательно!!")
     private Integer amount;
 
 
