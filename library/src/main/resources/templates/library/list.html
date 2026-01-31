@@ -110,6 +110,16 @@ tr:hover {
 
   <br>
 
+    <form th:action="@{/books/search}" method="get" style="margin-bottom:15px;">
+        <input type="text"
+               name="keyword"
+               placeholder="Search by Title"
+               th:value="${keyword}">
+
+        <button type="submit">Search</button>
+        <a th:href="@{/books}" style="margin-left:10px">Reset</a>
+    </form>
+
     <table border="1">
         <tr>
             <th>Title</th>
@@ -130,5 +140,20 @@ tr:hover {
             </td>
         </tr>
     </table>
+    <div style="margin-top:20px">
+        <a th:if="${currentPage > 0}" th:href="@{/books(page=${currentPage - 1}, size=${size})}">←</a>
+
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a
+                    th:href="@{${keyword != null}
+                    ? '/books/search?keyword=' + ${keyword} + '&page=' + ${i} + '&size=' + ${size}
+                    : '/books/?page=' + ${i} + '&size=' + ${size}}"
+                    th:text="${i + 1}"
+                    style="${i == currentPage} ? 'font-weight:bold' : ''">
+            </a>
+        </span>
+
+        <a th:if="${currentPage + 1 < totalPages}" th:href="@{/books(page=${currentPage + 1}, size=${size})}">→</a>
+    </div>
 </body>
 </html>
