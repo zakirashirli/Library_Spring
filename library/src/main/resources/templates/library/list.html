@@ -144,10 +144,19 @@ tr:hover {
         <a th:if="${currentPage > 0}" th:href="@{/books(page=${currentPage - 1}, size=${size})}">←</a>
 
         <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+
+<!--            если есть search-->
             <a
-                    th:href="@{${keyword != null}
-                    ? '/books/search?keyword=' + ${keyword} + '&page=' + ${i} + '&size=' + ${size}
-                    : '/books/?page=' + ${i} + '&size=' + ${size}}"
+                    th:if="${keyword != null}"
+                    th:href="@{/books/search(keyword=${keyword}, page=${i}, size=${size})}"
+                    th:text="${i + 1}"
+                    style="${i == currentPage} ? 'font-weight:bold' : ''">
+            </a>
+
+<!--            если обычный список-->
+            <a
+                    th:if="${keyword == null}"
+                    th:href="@{/books(page=${i}, size=${size})}"
                     th:text="${i + 1}"
                     style="${i == currentPage} ? 'font-weight:bold' : ''">
             </a>

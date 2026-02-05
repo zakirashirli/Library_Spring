@@ -1,6 +1,8 @@
 package com.library.dea.controller;
 
+import com.library.dea.dto.BookDTO;
 import com.library.dea.entity.Book;
+import com.library.dea.mapper.BookMapper;
 import com.library.dea.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/books")
@@ -25,9 +29,20 @@ public class BookPageController {
     @GetMapping // mvc
     public String showBooks(@RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "5") int size,
+                            @RequestParam(required = false) String keyword,
                             Model model) {
 
-        Page<Book> bookPage = bookService.findPaginated(page, size);
+        Page<Book> bookPage;
+
+        if (keyword != null && !keyword.isBlank()) {
+            bookPage = bookService.search(keyword, page, size);
+            model.addAttribute("keyword", keyword);
+        } else {
+            bookPage = bookService.findPaginated(page, size);
+            model.addAttribute("keyword", null);
+        }
+
+
 
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("currentPage", page);
@@ -37,29 +52,42 @@ public class BookPageController {
         return "library/list";
     }
 
+//    @GetMapping
+//    public String list(Model model) {
+//        List<BookDTO> books = bookService.showAll()
+//                .stream()
+//                .map(BookMapper::toDTO)
+//                .toList();
+//
+//        model.addAttribute("books", books);
+//        return "library/list";
+//    }
+
+
     // add form
     @GetMapping("/new")
     public String form(Model model) {
-        model.addAttribute("book", new Book());
+        model.addAttribute("book", new BookDTO());
         return "library/new";
     }
 
     // save
     @PostMapping
     public String save(
-            @Valid @ModelAttribute Book book,
+            @Valid @ModelAttribute BookDTO bookDTO,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return book.getId() == null ? "library/new" : "library/edit";
+            return bookDTO.getId() == null ? "library/new" : "library/edit";
         }
-        bookService.add(book);
+        bookService.add(BookMapper.toEntity(bookDTO));
         return "redirect:/books" ;
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        model.addAttribute("book", bookService.showById(id));
+        Book book = bookService.showById(id);
+        model.addAttribute("book", BookMapper.toDTO(book));
         return "library/edit";
     }
 
