@@ -74,13 +74,13 @@ public class BookPageController {
     // save
     @PostMapping
     public String save(
-            @Valid @ModelAttribute BookDTO bookDTO,
+            @Valid @ModelAttribute("book") BookDTO bookDTO,
             BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return bookDTO.getId() == null ? "library/new" : "library/edit";
         }
-        bookService.add(BookMapper.toEntity(bookDTO));
+        bookService.saveDto(bookDTO);
         return "redirect:/books" ;
     }
 
@@ -98,7 +98,7 @@ public class BookPageController {
     }
 
     @GetMapping("/search")
-    public String seacrhBooks(
+    public String searchBooks(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,

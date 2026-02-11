@@ -1,10 +1,27 @@
 package com.library.dea.dto;
 
+import jakarta.validation.constraints.*;
+
 public class BookDTO {
+
     private Integer id;
+
+    @NotBlank(message = "Title обязательно!!")
+    @Size(min = 2, max = 100, message = "Title must be 2-100 characters")
     private String title;
+
+    @NotBlank(message = "Author обязательно!!")
+    @Size(min = 4, max = 100, message = "Author must be 4-100 characters")
     private String author;
+
+    @NotNull(message = "Price обязательно!!")
+    @DecimalMin(value="0.01", message = "Price must be at least 0.01")
+    @Digits(integer = 10, fraction = 2, message = "Price format: up to 10 digits and 2 decimals") // 10.2
     private Double price;
+
+    @NotNull(message = "Amount обязательно!!")
+    @Min(value=1, message = " Min amount must be at least 1")
+    @Max(value=1000, message = "Max amount must be not more than 1000")
     private Integer amount;
 
     public BookDTO() {
