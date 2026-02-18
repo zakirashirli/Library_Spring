@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<form th:action="@{/login}" method="post">
+    <h2>Login</h2>
+
+    <div>
+        <input type="text" name="username"/>
+    </div>
+
+    <div>
+        <input type="password" name="password"/>
+    </div>
+
+    <button type="submit">Login</button>
+
+    <p th:if="${param.error}" style="color:red">
+        Wrong username or password!
+    </p>
+
+    <p th:if="${param.logout}" style="color:green">
+        Logged out successfully!
+    </p>
+</form>
+<!--    <p th:if="${param.error}" style="color:red">-->
+<!--        Wrong username or password!-->
+<!--    </p>-->
+<!--    <p th:if="${param.logout}" style="color:green">-->
+<!--        Logged out successfully!-->
+<!--    </p>-->
+<style>
+    /* ===== RESET ===== */
+    * {
+        box-sizing: border-box;
+    }
+
+    /* ===== BACKGROUND ===== */
+    body {
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #1d2671, #c33764);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto; /* <-- СКРОЛЛ */
+        padding: 40px 15px;
+        text-align: center;
+    }
+
+    /* ===== LOGIN CARD ===== */
+    form {
+        width: 360px;
+        padding: 35px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+        animation: slideUp 0.8s ease;
+    }
+
+    /* ===== TITLE ===== */
+    h2 {
+text-align: center;
+margin-bottom: 25px;
+font-weight: 700;
+letter-spacing: 1px;
+color: #fff;
+}
+
+    /* ===== INPUTS ===== */
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 12px 14px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: none;
+        font-size: 15px;
+        background: rgba(255,255,255,0.85);
+        transition: all 0.25s ease;
+    }
+
+    input:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(255,255,255,0.4);
+        transform: scale(1.02);
+    }
+
+    /* ===== BUTTON ===== */
+    button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,114,255,0.6);
+    }
+
+    /* ===== MESSAGES ===== */
+    p {
+        text-align: center;
+        margin-top: 14px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    p[style*="red"] {
+        color: #ffdddd !important;
+    }
+
+    p[style*="green"] {
+        color: #ddffea !important;
+    }
+
+    /* ===== ANIMATION ===== */
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 420px) {
+        form {
+            width: 100%;
+            padding: 28px;
+        }
+    }
+</style>
+
+</body>
+</html>
