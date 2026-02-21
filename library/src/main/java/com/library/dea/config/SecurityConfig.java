@@ -11,7 +11,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
+                        // swagger
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                        .permitAll()
+                        // public pages
+                        .requestMatchers("/login", "/register", "/css/**", "/js/**")
                         .permitAll()
                         .requestMatchers("/books/new", "/books/edit/**", "/books/delete/**")
                         .hasRole("ADMIN")
@@ -23,6 +27,9 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .defaultSuccessUrl("/books", true)
                         .permitAll()
+                )
+                .exceptionHandling(ex ->
+                        ex.accessDeniedPage("/access-denied")
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
