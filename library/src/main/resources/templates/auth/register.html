@@ -17,6 +17,11 @@
         <input type="password" th:field="*{password}">
         <div style="color:red;" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
       </div>
+      <div>
+          <label>Confirm Password</label>
+          <input type="password" th:field="*{confirmPassword}">
+          <div style="color:red;" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
+      </div>
 
     <button type="submit">Create Account</button>
   </form>
