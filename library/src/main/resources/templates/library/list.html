@@ -248,7 +248,11 @@
 
   <h2>Book List</h2>
 
-  <a th:href="@{/books/new}">+Add New Book</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+  <a th:if="${isAdmin}" th:href="@{/books/new}">+Add New Book</a>
 
   <br>
 
@@ -268,7 +272,7 @@
             <th>Author</th>
             <th>Price</th>
             <th>Amount</th>
-            <th>Actions</th>
+            <th th:if="${isAdmin}">Actions</th>
         </tr>
         <tr th:each="book : ${books}">
             <td th:text="${book.title}"></td>

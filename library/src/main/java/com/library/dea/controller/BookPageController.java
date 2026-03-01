@@ -6,8 +6,7 @@ import com.library.dea.mapper.BookMapper;
 import com.library.dea.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,7 +29,12 @@ public class BookPageController {
     public String showBooks(@RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "5") int size,
                             @RequestParam(required = false) String keyword,
-                            Model model) {
+                            Model model,
+                            Authentication authentication) {
+
+        boolean isAdmin = authentication.getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         Page<Book> bookPage;
 
@@ -48,6 +52,7 @@ public class BookPageController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("size", size);
+        model.addAttribute("isAdmin", isAdmin);
 
         return "library/list";
     }
