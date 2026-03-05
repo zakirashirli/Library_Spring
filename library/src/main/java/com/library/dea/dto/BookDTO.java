@@ -1,5 +1,6 @@
 package com.library.dea.dto;
 
+import com.library.dea.entity.Author;
 import com.library.dea.validation.ValidPrice;
 import jakarta.validation.constraints.*;
 
@@ -11,9 +12,9 @@ public class BookDTO {
     @Size(min = 2, max = 100, message = "Title must be 2-100 characters")
     private String title;
 
-    @NotBlank(message = "Author обязательно!!")
-    @Size(min = 4, max = 100, message = "Author must be 4-100 characters")
-    private String author;
+//    @NotBlank(message = "Author обязательно!!")
+//    @Size(min = 4, max = 100, message = "Author must be 4-100 characters")
+//    private String author;
 
     @NotNull(message = "Price обязательно!!")
 //    @DecimalMin(value="0.01", message = "Price must be at least 0.01")
@@ -25,6 +26,10 @@ public class BookDTO {
     @Min(value=1, message = " Min amount must be at least 1")
     @Max(value=1000, message = "Max amount must be not more than 1000")
     private Integer amount;
+
+    private Long authorId;
+
+    private String authorName;
 
     public BookDTO() {
 
@@ -54,13 +59,13 @@ public class BookDTO {
         this.price = price;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+//    public String getAuthor() {
+//        return author;
+//    }
+//
+//    public void setAuthor(String author) {
+//        this.author = author;
+//    }
 
     public String getTitle() {
         return title;
@@ -68,5 +73,21 @@ public class BookDTO {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 }

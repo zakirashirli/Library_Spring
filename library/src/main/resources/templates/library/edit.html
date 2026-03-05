@@ -22,11 +22,17 @@
     </div>
     <div>
         <label>Author:</label>
-        <input type="text" th:field="*{author}"/>
+        <select th:field="*{authorId}">
+            <option th:each="author : ${authors}"
+                    th:value="${author.id}"
+                    th:text="${author.name}">
+
+            </option>
+        </select>
         <br>
         <span class = "error"
-              th:if="${#fields.hasErrors('author')} ? 'error-field'"
-              th:errors="*{author}">
+              th:if="${#fields.hasErrors('authorId')} ? 'error-field'"
+              th:errors="*{authorId}">
         </span>
     </div>
     <div>

@@ -3,6 +3,7 @@ package com.library.dea.controller;
 import com.library.dea.dto.BookDTO;
 import com.library.dea.entity.Book;
 import com.library.dea.mapper.BookMapper;
+import com.library.dea.repository.AuthorRepository;
 import com.library.dea.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -18,10 +19,11 @@ import java.util.List;
 @RequestMapping("/books")
 public class BookPageController {
     private final BookService bookService;
+    private final AuthorRepository authorRepository;
 
-
-    public BookPageController(BookService bookService) {
+    public BookPageController(BookService bookService, AuthorRepository authorRepository) {
         this.bookService = bookService;
+        this.authorRepository = authorRepository;
     }
 
     // table
@@ -73,6 +75,7 @@ public class BookPageController {
     @GetMapping("/new")
     public String form(Model model) {
         model.addAttribute("book", new BookDTO());
+        model.addAttribute("authors", authorRepository.findAll());
         return "library/new";
     }
 
@@ -93,6 +96,7 @@ public class BookPageController {
     public String edit(@PathVariable Integer id, Model model) {
         Book book = bookService.showById(id);
         model.addAttribute("book", BookMapper.toDTO(book));
+        model.addAttribute("authors", authorRepository.findAll());
         return "library/edit";
     }
 
