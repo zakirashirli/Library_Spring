@@ -8,8 +8,8 @@ public class BookDTO {
 
     private Integer id;
 
-    @NotBlank(message = "Title обязательно!!")
-    @Size(min = 2, max = 100, message = "Title must be 2-100 characters")
+    @NotBlank(message = "{error.notblank}")
+    @Size(min = 2, max = 100, message = "{error.size}")
     private String title;
 
 //    @NotBlank(message = "Author обязательно!!")

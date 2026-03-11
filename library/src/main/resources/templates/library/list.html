@@ -246,69 +246,81 @@
 
 </style>
 
-  <h2>Book List</h2>
+<h2 th:text="#{app.bookList}"></h2>
 
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
+<a th:href="@{?lang=en}" th:text="#{lang.en}"></a>
+<a th:href="@{?lang=ru}" th:text="#{lang.ru}"></a>
 
-  <a th:if="${isAdmin}" th:href="@{/books/new}">+Add New Book</a>
+<form th:action="@{/logout}" method="post">
+    <button type="submit" th:text="#{button.logout}"></button>
+</form>
 
-  <br>
+<a th:if="${isAdmin}"
+   th:href="@{/books/new}"
+   th:text="#{button.addBook}"></a>
 
-    <form th:action="@{/books/search}" method="get" style="margin-bottom:15px;">
-        <input type="text"
-               name="keyword"
-               placeholder="Search by Title"
-               th:value="${keyword}">
+<br>
 
-        <button type="submit">Search</button>
-        <a th:href="@{/books}" style="margin-left:10px">Reset</a>
-    </form>
+<form th:action="@{/books/search}" method="get" style="margin-bottom:15px;">
+    <input type="text"
+           name="keyword"
+           th:placeholder="#{placeholder.search}"
+           th:value="${keyword}">
 
-    <table border="1">
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Price</th>
-            <th>Amount</th>
-            <th th:if="${isAdmin}">Actions</th>
-        </tr>
-        <tr th:each="book : ${books}">
-            <td th:text="${book.title}"></td>
-            <td th:text="${book.author.name}"></td>
-            <td th:text="${book.price}"></td>
-            <td th:text="${book.amount}"></td>
-            <td>
-                <a th:href="@{/books/edit/{id}(id=${book.id})}">Edit</a>
-                <a th:href="@{/books/delete/{id}(id=${book.id})}"
-                   onclick="return confirm('Are you sure?')">Delete</a>
-            </td>
-        </tr>
-    </table>
-    <div style="margin-top:20px">
-        <a th:if="${currentPage > 0}" th:href="@{/books(page=${currentPage - 1}, size=${size})}">←</a>
+    <button type="submit" th:text="#{button.search}"></button>
+    <a th:href="@{/books}" style="margin-left:10px" th:text="#{button.reset}"></a>
+</form>
 
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+<table border="1">
+    <tr>
+        <th th:text="#{book.title}"></th>
+        <th th:text="#{table.author}"></th>
+        <th th:text="#{table.price}"></th>
+        <th th:text="#{table.amount}"></th>
+        <th th:if="${isAdmin}" th:text="#{table.actions}"></th>
+    </tr>
 
-<!--            если есть search-->
-            <a
-                    th:if="${keyword != null}"
-                    th:href="@{/books/search(keyword=${keyword}, page=${i}, size=${size})}"
-                    th:text="${i + 1}"
-                    style="${i == currentPage} ? 'font-weight:bold' : ''">
-            </a>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.author.name}"></td>
+        <td th:text="${book.price}"></td>
+        <td th:text="${book.amount}"></td>
 
-<!--            если обычный список-->
-            <a
-                    th:if="${keyword == null}"
-                    th:href="@{/books(page=${i}, size=${size})}"
-                    th:text="${i + 1}"
-                    style="${i == currentPage} ? 'font-weight:bold' : ''">
-            </a>
-        </span>
+        <td>
+            <a th:href="@{/books/edit/{id}(id=${book.id})}"
+               th:text="#{button.edit}"></a>
 
-        <a th:if="${currentPage + 1 < totalPages}" th:href="@{/books(page=${currentPage + 1}, size=${size})}">→</a>
-    </div>
+            <a th:href="@{/books/delete/{id}(id=${book.id})}"
+               th:onclick="|return confirm('#{confirm.delete}')|"
+               th:text="#{button.delete}"></a>
+        </td>
+    </tr>
+</table>
+
+<div style="margin-top:20px">
+    <a th:if="${currentPage > 0}"
+       th:href="@{/books(page=${currentPage - 1}, size=${size})}"
+       th:text="#{pagination.prev}"></a>
+
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+
+        <a th:if="${keyword != null}"
+           th:href="@{/books/search(keyword=${keyword}, page=${i}, size=${size})}"
+           th:text="${i + 1}"
+           th:style="${i == currentPage} ? 'font-weight:bold' : ''">
+        </a>
+
+        <a th:if="${keyword == null}"
+           th:href="@{/books(page=${i}, size=${size})}"
+           th:text="${i + 1}"
+           th:style="${i == currentPage} ? 'font-weight:bold' : ''">
+        </a>
+
+    </span>
+
+    <a th:if="${currentPage + 1 < totalPages}"
+       th:href="@{/books(page=${currentPage + 1}, size=${size})}"
+       th:text="#{pagination.next}"></a>
+</div>
 </body>
 </html>
