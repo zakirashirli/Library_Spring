@@ -3,6 +3,8 @@ package com.library.dea.service.impl;
 import com.library.dea.dto.BookDTO;
 import com.library.dea.entity.Author;
 import com.library.dea.entity.Book;
+import com.library.dea.exception.AuthorNotFoundException;
+import com.library.dea.exception.BookNotFoundException;
 import com.library.dea.mapper.BookMapper;
 import com.library.dea.repository.AuthorRepository;
 import com.library.dea.repository.BookRepository;
@@ -46,13 +48,13 @@ public class BookServiceImpl implements BookService{
     @Override
     public Book showById(Integer id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No Book with id: " + id));
+                .orElseThrow(() -> new BookNotFoundException("No Book with id: " + id));
     }
 
     @Override
     public Book update(Integer id, BookDTO updatedBook) {
         Book existing = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No Book with id: " + id));
+                .orElseThrow(() -> new BookNotFoundException("No Book with id: " + id));
         existing.setTitle(updatedBook.getTitle());
         existing.setPrice(updatedBook.getPrice());
         existing.setAmount(updatedBook.getAmount());
@@ -82,7 +84,7 @@ public class BookServiceImpl implements BookService{
         Book entity = BookMapper.toEntity(bookDTO);
         Author author = authorRepository
                 .findById(bookDTO.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("No Author"));
+                .orElseThrow(() -> new AuthorNotFoundException("Author Not Found!"));
 
         entity.setAuthor(author);
         bookRepository.save(entity);
