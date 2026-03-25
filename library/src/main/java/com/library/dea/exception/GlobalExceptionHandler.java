@@ -28,10 +28,18 @@ public class GlobalExceptionHandler {
         return "error/author-error";
     }
 
+    @ExceptionHandler(AuthorAlreadyExistsException.class)
+    public String handleAuthorAlreadyExists(AuthorAlreadyExistsException ex, Model model) {
+        model.addAttribute("errorMessage", ex.getMessage());
+
+        return "error/author-error";
+    }
+
     @ExceptionHandler(PasswordMismatchException.class)
     public String handlePasswordMismatch(PasswordMismatchException ex, Model model) {
         model.addAttribute("errorMessage", ex.getMessage());
 
         return "error/password-mismatch-error";
     }
+
 }
