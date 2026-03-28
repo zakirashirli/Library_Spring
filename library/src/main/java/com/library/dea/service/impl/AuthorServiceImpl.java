@@ -6,6 +6,7 @@ import com.library.dea.exception.AuthorAlreadyExistsException;
 import com.library.dea.exception.AuthorNotFoundException;
 import com.library.dea.repository.AuthorRepository;
 import com.library.dea.service.AuthorService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public AuthorDTO createAuthor(AuthorDTO authorDTO) {
-        if (authorRepository.existsByName(authorDTO.getName())) {
+        if (authorRepository.existsByNameIgnoreCase(authorDTO.getName())) {
             throw new AuthorAlreadyExistsException("Author Already Exists!");
         }
 
@@ -62,9 +63,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteAuthor(Long id) {
-        authorRepository.deleteById(id);
-    }
+        Author author = authorRepository.findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException("Author not found with ID: " + id));
 
+        try{
+            authorRepository.delete(author);
+        } catch (DataIntegrityViolationException ex) {
+            throw new AuthorAlreadyExistsException("Cannot delete author because it is used by books");
+        }
+    }
 
     //MAPPER
     private AuthorDTO mapToDto(Author author) {
@@ -80,6 +87,4 @@ public class AuthorServiceImpl implements AuthorService {
 
         return author;
     }
-
-
 }

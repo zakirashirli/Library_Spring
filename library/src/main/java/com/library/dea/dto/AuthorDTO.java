@@ -1,7 +1,13 @@
 package com.library.dea.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class AuthorDTO {
     private Long id;
+
+    @NotBlank(message = "Author is required!")
+    @Size(min = 3, max = 100, message = "Author name must be between 3 and 100!")
     private String name;
 
     public AuthorDTO() {
