@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{app.authorCreate}">Add Author</title>
+    <title th:text="#{app.authorEdit}">Edit Author</title>
     <link rel="stylesheet" th:href="@{/css/form-page.css}">
 </head>
 <body>
@@ -11,16 +11,16 @@
     <section class="form-card">
         <div class="form-header">
             <p class="eyebrow" th:text="#{nav.authors}">Authors</p>
-            <h1 th:text="#{app.authorCreate}">Add Author</h1>
-            <p>Create a new author entry for the library catalog.</p>
+            <h1 th:text="#{app.authorEdit}">Edit Author</h1>
+            <p>Update the author name and keep existing book relationships intact.</p>
         </div>
 
         <div class="lang-switch">
-            <a th:href="@{/admin/authors/new(lang='en')}" th:text="#{lang.en}">EN</a>
-            <a th:href="@{/admin/authors/new(lang='ru')}" th:text="#{lang.ru}">RU</a>
+            <a th:href="@{/admin/authors/edit/{id}(id=${author.id}, lang='en')}" th:text="#{lang.en}">EN</a>
+            <a th:href="@{/admin/authors/edit/{id}(id=${author.id}, lang='ru')}" th:text="#{lang.ru}">RU</a>
         </div>
 
-        <form th:action="@{/admin/authors/save}" th:object="${author}" method="post">
+        <form th:action="@{/admin/authors/update/{id}(id=${author.id})}" th:object="${author}" method="post">
             <input type="hidden" th:field="*{id}">
 
             <div class="field">

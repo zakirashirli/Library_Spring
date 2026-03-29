@@ -1,141 +1,66 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{nav.register}">Register</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
 <body>
-  <h2>Register</h2>
-  <form th:action="@{/register}" th:object="${form}" method="post">
-      <div>
-        <label>Username</label>
-        <input type="text" th:field="*{username}">
-        <div style="color:red;" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
-      </div>
-      <div>
-        <label>Password</label>
-        <input type="password" th:field="*{password}">
-        <div style="color:red;" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-      </div>
-      <div>
-          <label>Confirm Password</label>
-          <input type="password" th:field="*{confirmPassword}">
-          <div style="color:red;" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
-      </div>
+<main class="auth-shell">
+    <section class="auth-hero">
+        <p class="eyebrow" th:text="#{nav.register}">Register</p>
+        <h1 th:text="#{auth.register.title}">Create Your Account</h1>
+        <p class="hero-copy" th:text="#{auth.register.subtitle}">Register a new account and start working with the library catalog.</p>
 
-    <button type="submit">Create Account</button>
-  </form>
-<p>
-  <a th:href="@{/login}">Back to login</a>
-</p>
+        <div class="lang-switch">
+            <a th:href="@{/register(lang='en')}" th:text="#{lang.en}">EN</a>
+            <a th:href="@{/register(lang='ru')}" th:text="#{lang.ru}">RU</a>
+        </div>
+    </section>
 
-  <style>
-      /* Reset */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+    <section class="auth-card">
+        <form th:action="@{/register}" th:object="${form}" method="post">
+            <div class="field">
+                <label for="username" th:text="#{auth.username}">Username</label>
+                <input id="username"
+                       type="text"
+                       th:field="*{username}"
+                       th:placeholder="#{placeholder.username}"
+                       autocomplete="username"
+                       th:classappend="${#fields.hasErrors('username')} ? ' error-field' : ''">
+                <span class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username error</span>
+            </div>
 
-/* Page layout */
-body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+            <div class="field">
+                <label for="password" th:text="#{auth.password}">Password</label>
+                <input id="password"
+                       type="password"
+                       th:field="*{password}"
+                       th:placeholder="#{placeholder.password}"
+                       autocomplete="new-password"
+                       th:classappend="${#fields.hasErrors('password')} ? ' error-field' : ''">
+                <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</span>
+            </div>
 
-/* Form container */
-form {
-    background: white;
-    padding: 35px 40px;
-    border-radius: 10px;
-    width: 320px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+            <div class="field">
+                <label for="confirmPassword" th:text="#{auth.confirmPassword}">Confirm Password</label>
+                <input id="confirmPassword"
+                       type="password"
+                       th:field="*{confirmPassword}"
+                       th:placeholder="#{placeholder.confirmPassword}"
+                       autocomplete="new-password"
+                       th:classappend="${#fields.hasErrors('confirmPassword')} ? ' error-field' : ''">
+                <span class="field-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Confirm password error</span>
+            </div>
 
-/* Title */
-/* Title above the form */
-h2 {
-    position: absolute;
-    top: calc(50% - 210px); /* поднимаем над формой */
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: "Segoe UI", Arial, sans-serif;
-    color: white;
-    font-size: 28px;
-    font-weight: 600;
-}
+            <button type="submit" th:text="#{button.register}">Create Account</button>
 
-/* Form fields container */
-form div {
-    margin-bottom: 15px;
-}
-
-/* Labels */
-label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 6px;
-    color: #555;
-}
-
-/* Inputs */
-input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    transition: border 0.2s;
-}
-
-input:focus {
-    border-color: #4f46e5;
-    outline: none;
-}
-
-/* Error messages */
-div[style*="color:red"] {
-    font-size: 12px;
-    margin-top: 5px;
-}
-
-/* Button */
-button {
-    width: 100%;
-    padding: 11px;
-    border: none;
-    border-radius: 6px;
-    background: #4f46e5;
-    color: white;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-button:hover {
-    background: #4338ca;
-}
-
-/* Back to login link */
-p {
-    text-align: center;
-    margin-top: 15px;
-}
-
-a {
-    color: #4f46e5;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-  </style>
+            <p class="helper-link">
+                <a th:href="@{/login}" th:text="#{auth.link.login}">Already registered? Back to login</a>
+            </p>
+        </form>
+    </section>
+</main>
 </body>
 </html>

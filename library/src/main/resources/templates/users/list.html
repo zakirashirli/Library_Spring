@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{app.userList}">User Management</title>
+    <link rel="stylesheet" th:href="@{/css/authors.css}">
+</head>
+<body>
+<main class="authors-page">
+    <section class="hero">
+        <div>
+            <p class="eyebrow" th:text="#{nav.users}">Users</p>
+            <h1 th:text="#{app.userList}">User Management</h1>
+            <p class="hero-copy">Manage accounts, roles, and activation state from one admin-only screen.</p>
+        </div>
+
+        <div class="toolbar">
+            <div class="lang-switch">
+                <a th:href="@{/admin/users(lang='en')}" th:text="#{lang.en}">EN</a>
+                <a th:href="@{/admin/users(lang='ru')}" th:text="#{lang.ru}">RU</a>
+            </div>
+            <div class="actions">
+                <a class="ghost-button" th:href="@{/admin/books}" th:text="#{nav.books}">Books</a>
+                <a class="ghost-button" th:href="@{/admin/authors}" th:text="#{nav.authors}">Authors</a>
+                <a class="primary-button" th:href="@{/admin/users/new}" th:text="#{button.addUser}">New User</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th th:text="#{table.id}">ID</th>
+                <th th:text="#{table.username}">Username</th>
+                <th th:text="#{table.role}">Role</th>
+                <th th:text="#{table.status}">Status</th>
+                <th th:text="#{table.actions}">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td class="empty" colspan="5" th:text="#{empty.users}">No users found yet.</td>
+            </tr>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}">1</td>
+                <td th:text="${user.username}">username</td>
+                <td th:text="${user.role}">ROLE_USER</td>
+                <td>
+                    <span th:if="${user.enabled}" th:text="#{user.status.enabled}">Enabled</span>
+                    <span th:if="${!user.enabled}" th:text="#{user.status.disabled}">Disabled</span>
+                </td>
+                <td class="row-actions">
+                    <a class="edit-link" th:href="@{/admin/users/edit/{id}(id=${user.id})}" th:text="#{button.edit}">Edit</a>
+                    <a class="delete-link"
+                       th:href="@{/admin/users/delete/{id}(id=${user.id})}"
+                       th:onclick="|return confirm('#{confirm.delete}')|"
+                       th:text="#{button.delete}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

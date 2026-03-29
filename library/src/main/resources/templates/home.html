@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{home.title}">Library</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+<main class="home-shell">
+    <section class="hero">
+        <div class="hero-copy">
+            <p class="eyebrow" th:text="#{home.eyebrow}">Library</p>
+            <h1 th:text="#{home.heading}">Books for curious readers.</h1>
+            <p th:text="#{home.description}">Explore the books available in our collection, learn what the website offers, and sign in only if you need access.</p>
+        </div>
+
+        <div class="hero-panel">
+            <div class="lang-switch">
+                <a th:href="@{/(lang='en')}" th:text="#{lang.en}">EN</a>
+                <a th:href="@{/(lang='ru')}" th:text="#{lang.ru}">RU</a>
+            </div>
+
+            <div class="hero-stats">
+                <span class="stat-value" th:text="${bookCount}">0</span>
+                <span class="stat-label" th:text="#{home.booksAvailable}">Books available</span>
+            </div>
+
+            <div class="hero-actions" th:if="${!authenticated}">
+                <a class="primary-button" th:href="@{/login}" th:text="#{button.login}">Login</a>
+                <a class="ghost-button" th:href="@{/register}" th:text="#{button.register}">Create Account</a>
+            </div>
+
+            <div class="hero-actions" th:if="${authenticated}">
+                <span class="welcome" th:text="#{home.welcome}">Welcome,</span>
+                <strong th:text="${currentUsername}">username</strong>
+                <form th:action="@{/logout}" method="post" class="inline-form">
+                    <button type="submit" class="ghost-button" th:text="#{button.logout}">Logout</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-card">
+        <div>
+            <p class="eyebrow" th:text="#{home.aboutLabel}">About</p>
+            <h2 th:text="#{home.aboutTitle}">About this website</h2>
+            <p th:text="#{home.aboutText}">This site helps visitors browse the library catalog. Administrative management for books, authors, and users is available only to admins.</p>
+        </div>
+
+        <div class="admin-panel" th:if="${isAdmin}">
+            <p class="eyebrow" th:text="#{home.adminLabel}">Admin</p>
+            <h3 th:text="#{home.adminTitle}">Management</h3>
+            <div class="admin-links">
+                <a th:href="@{/admin/books}" th:text="#{nav.books}">Books</a>
+                <a th:href="@{/admin/authors}" th:text="#{nav.authors}">Authors</a>
+                <a th:href="@{/admin/users}" th:text="#{nav.users}">Users</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="catalog-card">
+        <div class="section-head">
+            <div>
+                <p class="eyebrow" th:text="#{home.catalogLabel}">Catalog</p>
+                <h2 th:text="#{home.catalogTitle}">Available books</h2>
+            </div>
+        </div>
+
+        <div class="book-grid" th:if="${!#lists.isEmpty(books)}">
+            <article class="book-card" th:each="book : ${books}">
+                <h3 th:text="${book.title}">Book title</h3>
+                <p class="book-author" th:text="${book.author != null ? book.author.name : '-'}">Author</p>
+                <div class="meta-row">
+                    <span>
+                        <strong th:text="#{table.price}">Price</strong>
+                        <span th:text="|: ${book.price}|">: 0</span>
+                    </span>
+                    <span>
+                        <strong th:text="#{table.amount}">Amount</strong>
+                        <span th:text="|: ${book.amount}|">: 0</span>
+                    </span>
+                </div>
+            </article>
+        </div>
+
+        <div class="empty-state" th:if="${#lists.isEmpty(books)}" th:text="#{empty.books}">
+            No books found for this view.
+        </div>
+    </section>
+</main>
+</body>
+</html>

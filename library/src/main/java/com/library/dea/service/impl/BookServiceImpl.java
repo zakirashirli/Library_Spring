@@ -80,6 +80,12 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
+    public Page<Book> findByAuthor(Long authorId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        return bookRepository.findByAuthor_Id(authorId, pageable);
+    }
+
+    @Override
     public void saveDto(BookDTO bookDTO) {
         Book entity = BookMapper.toEntity(bookDTO);
         Author author = authorRepository

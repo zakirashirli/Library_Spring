@@ -2,12 +2,14 @@ package com.library.dea.controller;
 
 import com.library.dea.dto.AuthorDTO;
 import com.library.dea.service.AuthorService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/authors")
+@RequestMapping("/admin/authors")
 public class AuthorPageController {
 
     private final AuthorService authorService;
@@ -31,10 +33,15 @@ public class AuthorPageController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute AuthorDTO authorDTO) {
+    public String save(@Valid @ModelAttribute("author") AuthorDTO authorDTO,
+                       BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "authors/new";
+        }
+
         authorService.createAuthor(authorDTO);
 
-        return "redirect:/authors";
+        return "redirect:/admin/authors";
     }
 
     @GetMapping("/edit/{id}")
@@ -47,17 +54,23 @@ public class AuthorPageController {
     @PostMapping("/update/{id}")
     public String update(
             @PathVariable Long id,
-            @ModelAttribute AuthorDTO authorDTO
+            @Valid @ModelAttribute("author") AuthorDTO authorDTO,
+            BindingResult bindingResult
     ) {
+        if (bindingResult.hasErrors()) {
+            authorDTO.setId(id);
+            return "authors/edit";
+        }
+
         authorService.updateAuthor(id, authorDTO);
 
-        return "redirect:/authors" ;
+        return "redirect:/admin/authors" ;
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         authorService.deleteAuthor(id);
-        return "redirect:/authors";
+        return "redirect:/admin/authors";
     }
 
 }

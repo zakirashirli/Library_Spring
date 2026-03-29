@@ -11,30 +11,26 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // swagger
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**")
                         .permitAll()
-                        // public pages
-                        .requestMatchers("/login", "/register", "/css/**", "/js/**")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api/auth/**")
                         .permitAll()
-                        .requestMatchers("/books/new", "/books/edit/**", "/books/delete/**")
+                        .requestMatchers("/admin/**", "/api/books/**")
                         .hasRole("ADMIN")
-                        .requestMatchers("/books/**")
-                        .hasAnyRole("USER", "ADMIN")
-                        .anyRequest().authenticated()
-
-                ).formLogin(form -> form
+                        .anyRequest()
+                        .authenticated()
+                )
+                .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/books", true)
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
-                .exceptionHandling(ex ->
-                        ex.accessDeniedPage("/access-denied")
-                )
+                .exceptionHandling(ex -> ex.accessDeniedPage("/access-denied"))
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
+
         return http.build();
     }
 }

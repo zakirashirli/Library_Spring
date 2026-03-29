@@ -77,7 +77,8 @@ public class AuthorServiceImpl implements AuthorService {
     private AuthorDTO mapToDto(Author author) {
         return new AuthorDTO(
                 author.getId(),
-                author.getName()
+                author.getName(),
+                author.getBooks() == null ? 0 : author.getBooks().size()
         );
     }
 

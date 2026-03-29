@@ -2,325 +2,150 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Books</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{app.bookList}">Books</title>
+    <link rel="stylesheet" th:href="@{/css/books.css}">
 </head>
 <body>
-<style>
+<main class="books-page">
+    <section class="hero">
+        <div>
+            <p class="eyebrow" th:text="#{nav.books}">Books</p>
+            <h1 th:text="#{app.bookList}">Book List</h1>
+            <p class="hero-copy">Browse the catalog, jump from each title to its author, and narrow the list down by writer when you need a cleaner view.</p>
+        </div>
 
-    /* =============================
-       Base Layout
-    ============================= */
+        <div class="hero-actions">
+            <div class="lang-switch">
+                <a th:href="@{/admin/books(lang='en')}" th:text="#{lang.en}">EN</a>
+                <a th:href="@{/admin/books(lang='ru')}" th:text="#{lang.ru}">RU</a>
+            </div>
 
-    * {
-        box-sizing: border-box;
-    }
+            <div class="nav-actions">
+                <a class="ghost-button" th:href="@{/admin/authors}" th:text="#{button.backToAuthors}">Back to Authors</a>
+                <a class="ghost-button" th:href="@{/admin/users}" th:text="#{nav.users}">Users</a>
 
-    body {
-        padding: 40px;
-        font-family: "Inter", "Segoe UI", sans-serif;
-        background: #1e1e1e;
-        color: #e4e4e4;
-    }
+                <form th:action="@{/logout}" method="post" class="inline-form">
+                    <button type="submit" class="ghost-button logout-button" th:text="#{button.logout}">Logout</button>
+                </form>
 
-    /* Light mode support */
-    @media (prefers-color-scheme: light) {
-        body {
-            background: #f5f7fa;
-            color: #222;
-        }
-    }
+                <a class="primary-button"
+                   th:if="${isAdmin}"
+                   th:href="@{/admin/books/new}"
+                   th:text="#{button.addBook}">Add Book</a>
+            </div>
+        </div>
+    </section>
 
-    /* =============================
-       Heading
-    ============================= */
+    <section class="filters-card">
+        <form th:action="@{/admin/books}" method="get" class="search-form">
+            <input type="text"
+                   name="keyword"
+                   th:placeholder="#{placeholder.search}"
+                   th:value="${keyword}">
+            <button type="submit" th:text="#{button.search}">Search</button>
+            <a th:href="@{/admin/books}" th:text="#{button.reset}">Reset</a>
+        </form>
 
-    h2 {
-        font-size: 28px;
-        margin-bottom: 25px;
-        font-weight: 600;
-    }
+        <div class="author-filter-row">
+            <span class="filter-label" th:text="#{placeholder.filterAuthor}">Filter by author</span>
+            <div class="author-chips">
+                <a th:href="@{/admin/books}"
+                   th:classappend="${selectedAuthorId == null} ? ' active-chip' : ''"
+                   th:text="#{button.reset}">Reset</a>
+                <a th:each="author : ${authors}"
+                   th:href="@{/admin/books(authorId=${author.id})}"
+                   th:classappend="${selectedAuthorId == author.id} ? ' active-chip' : ''"
+                   th:text="${author.name}">Author</a>
+            </div>
+        </div>
 
-    /* =============================
-       Add Book Button
-    ============================= */
+        <div class="active-filter" th:if="${selectedAuthorId != null}">
+            <span th:text="#{filter.author}">Books by</span>
+            <strong th:text="${selectedAuthorName}">Author Name</strong>
+            <a th:href="@{/admin/books}" th:text="#{filter.clear}">Clear filter</a>
+        </div>
+    </section>
 
-    a[href*="/books/new"] {
-        display: inline-block;
-        margin-bottom: 20px;
-        padding: 10px 18px;
-        border-radius: 8px;
-        background: linear-gradient(135deg, #4CAF50, #2ecc71);
-        color: #fff;
-        font-weight: 600;
-        text-decoration: none;
-        transition: 0.2s ease;
-    }
+    <section class="table-card">
+        <table>
+            <thead>
+            <tr>
+                <th th:text="#{table.id}">ID</th>
+                <th th:text="#{book.title}">Title</th>
+                <th th:text="#{table.author}">Author</th>
+                <th th:text="#{table.price}">Price</th>
+                <th th:text="#{table.amount}">Amount</th>
+                <th th:if="${isAdmin}" th:text="#{table.actions}">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(books)}">
+                <td class="empty" th:colspan="${isAdmin} ? 6 : 5" th:text="#{empty.books}">No books found for this view.</td>
+            </tr>
+            <tr th:each="book : ${books}">
+                <td th:text="${book.id}">1</td>
+                <td th:text="${book.title}">Title</td>
+                <td>
+                    <a class="author-link"
+                       th:href="@{/admin/books(authorId=${book.author.id})}"
+                       th:text="${book.author.name}">Author</a>
+                </td>
+                <td th:text="${book.price}">0.00</td>
+                <td th:text="${book.amount}">0</td>
+                <td th:if="${isAdmin}" class="row-actions">
+                    <a class="edit-link"
+                       th:href="@{/admin/books/edit/{id}(id=${book.id})}"
+                       th:text="#{button.edit}">Edit</a>
+                    <a class="author-link"
+                       th:href="@{/admin/authors/edit/{id}(id=${book.author.id})}"
+                       th:text="#{nav.authors}">Authors</a>
+                    <a class="delete-link"
+                       th:href="@{/admin/books/delete/{id}(id=${book.id})}"
+                       th:onclick="|return confirm('#{confirm.delete}')|"
+                       th:text="#{button.delete}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 
-    a[href*="/books/new"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-    }
+    <section class="pagination" th:if="${totalPages > 1}">
+        <a th:if="${currentPage > 0 and selectedAuthorId != null}"
+           th:href="@{/admin/books(authorId=${selectedAuthorId}, page=${currentPage - 1}, size=${size})}"
+           th:text="#{pagination.prev}">Prev</a>
+        <a th:if="${currentPage > 0 and selectedAuthorId == null and keyword != null and !keyword.isBlank()}"
+           th:href="@{/admin/books(keyword=${keyword}, page=${currentPage - 1}, size=${size})}"
+           th:text="#{pagination.prev}">Prev</a>
+        <a th:if="${currentPage > 0 and selectedAuthorId == null and (keyword == null or keyword.isBlank())}"
+           th:href="@{/admin/books(page=${currentPage - 1}, size=${size})}"
+           th:text="#{pagination.prev}">Prev</a>
 
-    /* =============================
-       Search Form
-    ============================= */
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:if="${selectedAuthorId != null}"
+               th:href="@{/admin/books(authorId=${selectedAuthorId}, page=${i}, size=${size})}"
+               th:text="${i + 1}"
+               th:classappend="${i == currentPage} ? ' active-page' : ''">1</a>
+            <a th:if="${selectedAuthorId == null and keyword != null and !keyword.isBlank()}"
+               th:href="@{/admin/books(keyword=${keyword}, page=${i}, size=${size})}"
+               th:text="${i + 1}"
+               th:classappend="${i == currentPage} ? ' active-page' : ''">1</a>
+            <a th:if="${selectedAuthorId == null and (keyword == null or keyword.isBlank())}"
+               th:href="@{/admin/books(page=${i}, size=${size})}"
+               th:text="${i + 1}"
+               th:classappend="${i == currentPage} ? ' active-page' : ''">1</a>
+        </span>
 
-    form {
-        margin-bottom: 20px;
-    }
-
-    input[type="text"] {
-        padding: 9px 12px;
-        border-radius: 6px;
-        border: 1px solid #555;
-        background: #2c2c2c;
-        color: #fff;
-        width: 220px;
-        outline: none;
-        transition: 0.2s;
-    }
-
-    input[type="text"]:focus {
-        border-color: #4CAF50;
-    }
-
-    button {
-        padding: 9px 14px;
-        border-radius: 6px;
-        border: none;
-        background: #3a7bd5;
-        color: white;
-        font-weight: 500;
-        cursor: pointer;
-        margin-left: 6px;
-        transition: 0.2s;
-    }
-
-    button:hover {
-        background: #2f5ea7;
-    }
-
-    /* Reset link */
-    form a {
-        margin-left: 10px;
-        color: #aaa;
-        text-decoration: none;
-    }
-
-    form a:hover {
-        text-decoration: underline;
-    }
-
-    /* Light mode form */
-    @media (prefers-color-scheme: light) {
-        input[type="text"] {
-            background: #fff;
-            color: #000;
-            border: 1px solid #ccc;
-        }
-    }
-
-    /* =============================
-       Table Styling
-    ============================= */
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        border-radius: 10px;
-        overflow: hidden;
-        background: #2b2b2b;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-    }
-
-    /* Light mode table */
-    @media (prefers-color-scheme: light) {
-        table {
-            background: #ffffff;
-        }
-    }
-
-    th {
-        background: #333;
-        padding: 14px;
-        text-align: left;
-        font-weight: 600;
-        font-size: 14px;
-    }
-
-    td {
-        padding: 12px 14px;
-        font-size: 14px;
-    }
-
-    /* Light mode header */
-    @media (prefers-color-scheme: light) {
-        th {
-            background: #e9ecef;
-            color: #222;
-        }
-    }
-
-    /* Row styling */
-    tr {
-        transition: 0.2s ease;
-    }
-
-    tr:nth-child(even) {
-        background: #252525;
-    }
-
-    @media (prefers-color-scheme: light) {
-        tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-    }
-
-    tr:hover {
-        background: #3a3a3a;
-    }
-
-    @media (prefers-color-scheme: light) {
-        tr:hover {
-            background: #eef2f7;
-        }
-    }
-
-    /* =============================
-       Action Links
-    ============================= */
-
-    td a {
-        margin-right: 10px;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 13px;
-        transition: 0.2s;
-    }
-
-    td a:first-child {
-        color: #3498db;
-    }
-
-    td a:first-child:hover {
-        color: #217dbb;
-    }
-
-    td a:last-child {
-        color: #e74c3c;
-    }
-
-    td a:last-child:hover {
-        color: #c0392b;
-    }
-
-    /* =============================
-       Pagination
-    ============================= */
-
-    div[style*="margin-top:20px"] {
-        margin-top: 25px !important;
-    }
-
-    div[style*="margin-top:20px"] a {
-        padding: 6px 10px;
-        margin: 0 3px;
-        text-decoration: none;
-        border-radius: 5px;
-        background: #333;
-        color: #fff;
-        font-size: 13px;
-        transition: 0.2s;
-    }
-
-    div[style*="margin-top:20px"] a:hover {
-        background: #4CAF50;
-    }
-
-    @media (prefers-color-scheme: light) {
-        div[style*="margin-top:20px"] a {
-            background: #e9ecef;
-            color: #333;
-        }
-    }
-
-</style>
-
-<h2 th:text="#{app.bookList}"></h2>
-
-<a th:href="@{?lang=en}" th:text="#{lang.en}"></a>
-<a th:href="@{?lang=ru}" th:text="#{lang.ru}"></a>
-
-<form th:action="@{/logout}" method="post">
-    <button type="submit" th:text="#{button.logout}"></button>
-</form>
-
-<a th:if="${isAdmin}"
-   th:href="@{/books/new}"
-   th:text="#{button.addBook}"></a>
-
-<br>
-
-<form th:action="@{/books/search}" method="get" style="margin-bottom:15px;">
-    <input type="text"
-           name="keyword"
-           th:placeholder="#{placeholder.search}"
-           th:value="${keyword}">
-
-    <button type="submit" th:text="#{button.search}"></button>
-    <a th:href="@{/books}" style="margin-left:10px" th:text="#{button.reset}"></a>
-</form>
-
-<table border="1">
-    <tr>
-        <th th:text="#{book.title}"></th>
-        <th th:text="#{table.author}"></th>
-        <th th:text="#{table.price}"></th>
-        <th th:text="#{table.amount}"></th>
-        <th th:if="${isAdmin}" th:text="#{table.actions}"></th>
-    </tr>
-
-    <tr th:each="book : ${books}">
-        <td th:text="${book.title}"></td>
-        <td th:text="${book.author.name}"></td>
-        <td th:text="${book.price}"></td>
-        <td th:text="${book.amount}"></td>
-
-        <td>
-            <a th:href="@{/books/edit/{id}(id=${book.id})}"
-               th:text="#{button.edit}"></a>
-
-            <a th:href="@{/books/delete/{id}(id=${book.id})}"
-               th:onclick="|return confirm('#{confirm.delete}')|"
-               th:text="#{button.delete}"></a>
-        </td>
-    </tr>
-</table>
-
-<div style="margin-top:20px">
-    <a th:if="${currentPage > 0}"
-       th:href="@{/books(page=${currentPage - 1}, size=${size})}"
-       th:text="#{pagination.prev}"></a>
-
-    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-
-        <a th:if="${keyword != null}"
-           th:href="@{/books/search(keyword=${keyword}, page=${i}, size=${size})}"
-           th:text="${i + 1}"
-           th:style="${i == currentPage} ? 'font-weight:bold' : ''">
-        </a>
-
-        <a th:if="${keyword == null}"
-           th:href="@{/books(page=${i}, size=${size})}"
-           th:text="${i + 1}"
-           th:style="${i == currentPage} ? 'font-weight:bold' : ''">
-        </a>
-
-    </span>
-
-    <a th:if="${currentPage + 1 < totalPages}"
-       th:href="@{/books(page=${currentPage + 1}, size=${size})}"
-       th:text="#{pagination.next}"></a>
-</div>
+        <a th:if="${currentPage + 1 < totalPages and selectedAuthorId != null}"
+           th:href="@{/admin/books(authorId=${selectedAuthorId}, page=${currentPage + 1}, size=${size})}"
+           th:text="#{pagination.next}">Next</a>
+        <a th:if="${currentPage + 1 < totalPages and selectedAuthorId == null and keyword != null and !keyword.isBlank()}"
+           th:href="@{/admin/books(keyword=${keyword}, page=${currentPage + 1}, size=${size})}"
+           th:text="#{pagination.next}">Next</a>
+        <a th:if="${currentPage + 1 < totalPages and selectedAuthorId == null and (keyword == null or keyword.isBlank())}"
+           th:href="@{/admin/books(page=${currentPage + 1}, size=${size})}"
+           th:text="#{pagination.next}">Next</a>
+    </section>
+</main>
 </body>
 </html>

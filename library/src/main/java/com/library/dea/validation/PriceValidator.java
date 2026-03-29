@@ -9,8 +9,17 @@ public class PriceValidator implements ConstraintValidator<ValidPrice, Double> {
     public boolean isValid(Double value, ConstraintValidatorContext constraintValidatorContext) {
 
         if (value == null) {
-            return false;
+            return true;
         }
-        return value > 0;
+
+        if (value > 0) {
+            return true;
+        }
+
+        constraintValidatorContext.disableDefaultConstraintViolation();
+        constraintValidatorContext
+                .buildConstraintViolationWithTemplate("{book.validation.price.invalid}")
+                .addConstraintViolation();
+        return false;
     }
 }

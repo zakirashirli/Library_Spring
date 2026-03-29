@@ -1,7 +1,9 @@
 package com.library.dea.controller;
 
 import com.library.dea.dto.BookDTO;
+import com.library.dea.entity.Author;
 import com.library.dea.entity.Book;
+import com.library.dea.exception.AuthorNotFoundException;
 import com.library.dea.mapper.BookMapper;
 import com.library.dea.repository.AuthorRepository;
 import com.library.dea.service.BookService;
@@ -14,7 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/books")
+@RequestMapping("/admin/books")
 public class BookPageController {
     private final BookService bookService;
     private final AuthorRepository authorRepository;
@@ -29,6 +31,7 @@ public class BookPageController {
     public String showBooks(@RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "5") int size,
                             @RequestParam(required = false) String keyword,
+                            @RequestParam(required = false) Long authorId,
                             Model model,
                             Authentication authentication) {
 
@@ -38,12 +41,23 @@ public class BookPageController {
 
         Page<Book> bookPage;
 
-        if (keyword != null && !keyword.isBlank()) {
+        if (authorId != null) {
+            bookPage = bookService.findByAuthor(authorId, page, size);
+            Author author = authorRepository.findById(authorId)
+                    .orElseThrow(() -> new AuthorNotFoundException("Author not found with ID: " + authorId));
+            model.addAttribute("selectedAuthorId", authorId);
+            model.addAttribute("selectedAuthorName", author.getName());
+            model.addAttribute("keyword", null);
+        } else if (keyword != null && !keyword.isBlank()) {
             bookPage = bookService.search(keyword, page, size);
             model.addAttribute("keyword", keyword);
+            model.addAttribute("selectedAuthorId", null);
+            model.addAttribute("selectedAuthorName", null);
         } else {
             bookPage = bookService.findPaginated(page, size);
             model.addAttribute("keyword", null);
+            model.addAttribute("selectedAuthorId", null);
+            model.addAttribute("selectedAuthorName", null);
         }
 
 
@@ -53,6 +67,7 @@ public class BookPageController {
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("size", size);
         model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("authors", authorRepository.findAll());
 
         return "library/list";
     }
@@ -81,13 +96,15 @@ public class BookPageController {
     @PostMapping
     public String save(
             @Valid @ModelAttribute("book") BookDTO bookDTO,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Model model) {
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("authors", authorRepository.findAll());
             return bookDTO.getId() == null ? "library/new" : "library/edit";
         }
         bookService.saveDto(bookDTO);
-        return "redirect:/books" ;
+        return "redirect:/admin/books" ;
     }
 
     @GetMapping("/edit/{id}")
@@ -101,7 +118,7 @@ public class BookPageController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         bookService.deleteBook(id);
-        return "redirect:/books";
+        return "redirect:/admin/books";
     }
 
     @GetMapping("/search")
@@ -111,14 +128,6 @@ public class BookPageController {
             @RequestParam(defaultValue = "5") int size,
             Model model
     ) {
-        Page<Book> bookPage = bookService.search(keyword, page, size);
-
-        model.addAttribute("books", bookPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", bookPage.getTotalPages());
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("size", size);
-
-        return "library/list";
+        return "redirect:/admin/books?keyword=" + keyword + "&page=" + page + "&size=" + size;
     }
 }

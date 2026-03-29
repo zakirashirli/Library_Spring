@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{app.userCreate}">Add User</title>
+    <link rel="stylesheet" th:href="@{/css/form-page.css}">
+</head>
+<body>
+<main class="form-shell">
+    <section class="form-card">
+        <div class="form-header">
+            <p class="eyebrow" th:text="#{nav.users}">Users</p>
+            <h1 th:text="#{app.userCreate}">Add User</h1>
+            <p>Create a new account for admin or regular user access.</p>
+        </div>
+
+        <form th:action="@{/admin/users/save}" th:object="${user}" method="post">
+            <div class="field">
+                <label for="username" th:text="#{auth.username}">Username</label>
+                <input id="username" type="text" th:field="*{username}" th:classappend="${#fields.hasErrors('username')} ? ' error-field' : ''">
+                <span class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username error</span>
+            </div>
+
+            <div class="field">
+                <label for="password" th:text="#{auth.password}">Password</label>
+                <input id="password" type="password" th:field="*{password}" th:classappend="${#fields.hasErrors('password')} ? ' error-field' : ''">
+                <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password error</span>
+            </div>
+
+            <div class="field">
+                <label for="confirmPassword" th:text="#{auth.confirmPassword}">Confirm Password</label>
+                <input id="confirmPassword" type="password" th:field="*{confirmPassword}" th:classappend="${#fields.hasErrors('confirmPassword')} ? ' error-field' : ''">
+                <span class="error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Confirm password error</span>
+            </div>
+
+            <div class="field">
+                <label for="role" th:text="#{user.role}">Role</label>
+                <select id="role" th:field="*{role}">
+                    <option value="ROLE_USER">ROLE_USER</option>
+                    <option value="ROLE_ADMIN">ROLE_ADMIN</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="enabled" th:text="#{user.enabled}">Status</label>
+                <select id="enabled" th:field="*{enabled}">
+                    <option th:value="true" th:text="#{user.status.enabled}">Enabled</option>
+                    <option th:value="false" th:text="#{user.status.disabled}">Disabled</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" th:text="#{button.save}">Save</button>
+                <a class="secondary-link" th:href="@{/admin/users}" th:text="#{nav.users}">Users</a>
+            </div>
+        </form>
+    </section>
+</main>
+</body>
+</html>

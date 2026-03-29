@@ -48,6 +48,8 @@ public interface BookService {
     // search
     Page<Book> search(String keyword, int page, int size);
 
+    Page<Book> findByAuthor(Long authorId, int page, int size);
+
     void saveDto(BookDTO bookDTO);
 
 
